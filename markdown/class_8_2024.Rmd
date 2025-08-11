@@ -1,7 +1,7 @@
 ---
 title: "CPLN 0795 - Class 8"
 author: "Michael Fichman"
-date: "2024-08-19"
+date: "2025-08-11"
 output: html_document
 ---
 
@@ -51,6 +51,8 @@ You can run this "chunk" by copying and pasting the code into the console OR jus
 Look at how the "chunk" is formatted - there is a "wrapper" on the code.
 
 Don't have a package installed? Run install.packages("name_of_package") once, and then it's on your computer ready to be called into your environment using `library`
+
+There are some reliability with the Census API in 2025. If things are not working, the following code provides a workaround for installing tidycensus and tigris to work correctly - https://github.com/mafichman/CPLN_675/blob/main/misc/tigris_patch.R
 
 ```{r, echo=FALSE, message=FALSE}
 # Load required libraries
