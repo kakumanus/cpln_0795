@@ -72,7 +72,7 @@ https://api.census.gov/data/key_signup.html
 Paste your key into the space below and run the function `census_api_key`
 
 ```{r}
-census_api_key("e79f3706b6d61249968c6ce88794f6f556e5bf3d", overwrite = TRUE)
+census_api_key("6662138161177aabbe10805405e7b20b4dedb1f8", overwrite = TRUE)
 ```
 
 # Load Variables
@@ -307,6 +307,10 @@ Using the `mutate` command, create a column with a normalized measures of incide
 
 - `n_per_10k` (incidents per 10,000 people) or 
 - `n_per_sqmi` and (incidents per square mile)
+```{r}
+acs2020_incidents <- acs2020_incidents %>%
+  mutate(n_per_sqmi = as.numeric(n / area_sqmi))
+```
 
 ## Chunk 2 & 3 - Getting Some Spatial Data for Mapping
 
@@ -322,6 +326,16 @@ Download the Philly Council districts using `st_read` and be ready to lay those 
 
 They are hosted at this URL - philly_districts <- st_read("https://raw.githubusercontent.com/mafichman/cpln_0795/main/data/council_dist.geojson")
 
+```{r}
+philly_water <- area_water("PA", "Philadelphia", year = 2020)
+
+philly_water <- philly_water %>%
+  st_transform(crs = 2272)
+
+philly_districts <- st_read("https://raw.githubusercontent.com/mafichman/cpln_0795/main/data/council_dist.geojson")
+
+```
+
 # Chunks 4 & 5
 
 Make a chloropleth map of one of the measures (See the above tab "Mapping 311" or some of yesterday's code for an example of how to do this.)
@@ -333,6 +347,21 @@ Change the color ramp if possible
 Add council districts on top with the fill set to transparent
 
 Add some annotation (e.g your interpretations and thoughts) - what are your observations regarding the spatial process of these 311 calls?
+
+```{r}
+ggplot()+
+  geom_sf(data = acs2020_incidents,
+          aes(fill = n), color = "transparent")+
+  geom_sf(data = philly_districts,
+          color = "yellow", fill="transparent")+   
+  geom_sf(data = philly_water,
+          fill = "white", 
+          color = "transparent")+
+  scale_fill_gradient(low = "lightblue", high = "darkblue") +
+  labs(
+    title = "Incidents of 311 Complaints by Census Tracts, with Philadelphia City Council Districts Highlighted",
+    caption = "Data: American Community Survey 5-year estimates, Philly 311")
+```
 
 # Knit the markdown and push it to your Github repo
 
